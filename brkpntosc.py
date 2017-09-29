@@ -7,6 +7,7 @@
 #
 # This is an oscillator with a settable breakpoint
 
+
 from pyo import *
 
 class BrkPntOsc(PyoObject):
