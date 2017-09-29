@@ -7,6 +7,7 @@
 #
 # This is a simple triangle wave oscillator
 
+
 from pyo import *
 
 class TriOsc(PyoObject):
