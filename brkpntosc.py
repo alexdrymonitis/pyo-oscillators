@@ -42,7 +42,6 @@ class BrkPntOsc(PyoObject):
         self._rising = (self._phasor / self._breakpoint) * (self._phasor < self._breakpoint)
         self._falling = (((self._phasor - self._breakpoint) / self._invbrk) * (-1) + 1) * (self._phasor >= self._breakpoint)
         self._osc = Sig((self._rising + self._falling), mul=2, add=-1)
-        # A Sig is the best way to properly handle "mul" and "add" arguments.
         self._output = Sig(self._osc, mul, add)
         # Create the "_base_objs" attribute. This is the object's audio output.
         self._base_objs = self._output.getBaseObjects()
