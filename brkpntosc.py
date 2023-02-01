@@ -5,7 +5,7 @@
 # A Licence copy should come with this code
 # If not, please check <http://www.gnu.org/licenses/>
 #
-# This is an oscillator with a settable breakpoint
+# This is an oscillator with a settable breakpoin
 
 from pyo import *
 
@@ -27,8 +27,9 @@ class BrkPntOsc(PyoObject):
             Point where the waveform breaks. From 0 to 1. Defaults to 0.5.
 
     >>> s = Server().boot()
-    >>> s.start()
-    >>> a = BrkPntOsc(200, breakpoint=.75, mul=.2).out()
+    >>> lfo = Sine(freq=.2, mul=.4, add=.5)
+    >>> brk = BrkPntOsc(freq=[200,202], breakpoint=lfo, mul=.2).out()
+    >>> s.gui(locals())
 
     """
     def __init__(self, freq=100, phase=0, breakpoint=0.5, mul=1, add=0):
@@ -46,7 +47,7 @@ class BrkPntOsc(PyoObject):
         # Create the "_base_objs" attribute. This is the object's audio output.
         self._base_objs = self._output.getBaseObjects()
 
-    def setFreq(self, x):
+    def setFreq(self, freq):
         """
         Replace the `freq` attribute.
 
@@ -56,10 +57,10 @@ class BrkPntOsc(PyoObject):
                 New `freq` attribute.
 
         """
-        self._freq = x
-        self._phasor.freq = x
+        self._freq = freq
+        self._phasor.setFreq(self._freq)
 
-    def setPhase(self, x):
+    def setPhase(self, phase):
         """
         Replace the `phase` attribute.
 
@@ -69,10 +70,10 @@ class BrkPntOsc(PyoObject):
                 New `phase` attribute.
 
         """
-        self._phase = x
-        self._phasor.phase = x
+        self._phase = phase
+        self._phasor.setPhase(self._phase)
 
-    def setBrkPnt(self, x):
+    def setBrkPnt(self, brkpnt):
         """
         Replace the `breakpoint` attribute.
 
@@ -82,54 +83,39 @@ class BrkPntOsc(PyoObject):
                 New `phase` attribute.
 
         """
-        self._breakpoint.value = x
-
-    def play(self, dur=0, delay=0):
-        for key in self.__dict__.keys():
-            if isinstance(self.__dict__[key], PyoObject):
-                self.__dict__[key].play(dur, delay)
-        return PyoObject.play(self, dur, delay)
-
-    def stop(self):
-        for key in self.__dict__.keys():
-            if isinstance(self.__dict__[key], PyoObject):
-                self.__dict__[key].stop()
-        return PyoObject.stop(self)
-
-    def out(self, chnl=0, inc=1, dur=0, delay=0):
-        for key in self.__dict__.keys():
-            if isinstance(self.__dict__[key], PyoObject):
-                self.__dict__[key].play(dur, delay)
-        return PyoObject.out(self, chnl, inc, dur, delay)
+        self._breakpoint.setValue(brkpnt)
 
     @property
     def freq(self):
         """float or PyoObject. Fundamental frequency in cycles per second."""
         return self._freq
+    
     @freq.setter
-    def freq(self, x): self.setFreq(x)
+    def freq(self, freq):
+        self.setFreq(freq)
 
     @property
     def phase(self):
         """float or PyoObject. Phase of sampling between 0 and 1."""
         return self._phase
+    
     @phase.setter
-    def phase(self, x): self.setPhase(x)
+    def phase(self, phase):
+        self.setPhase(phase)
 
     @property
     def breakpoint(self):
         """float or PyoObject. Breakpoint of oscillator between 0 and 1."""
         return self._breakpoint
+    
     @breakpoint.setter
-    def breakpoint(self, x): self.setBrkPnt(x)
+    def breakpoint(self, brkpnt):
+        self.setBrkPnt(brkpnt)
 
 if __name__ == "__main__":
     # Test case...
     s = Server().boot()
-
-    a = Sine(freq=.2, mul=.25, add=.5)
-    brk = BrkPntOsc(freq=200, breakpoint=a, mul=.2).out()
-
+    lfo = Sine(freq=.2, mul=.4, add=.5)
+    brk = BrkPntOsc(freq=[200,202], breakpoint=lfo, mul=.2).out()
     sc = Scope(brk)
-
     s.gui(locals())
