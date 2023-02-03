@@ -36,6 +36,7 @@ class BrkPntOsc(PyoObject):
         PyoObject.__init__(self,mul,add)
         self._freq = freq
         self._phase = phase
+        self._freq,self._phase,breakpoint,mul,add,lmax=convertArgsToLists(freq,phase,breakpoint,mul,add)
         self._breakpoint = Sig(breakpoint)
         self._invbrk = 1.0 - self._breakpoint
         self._phasor = Phasor(freq=self._freq, phase=self._phase)
