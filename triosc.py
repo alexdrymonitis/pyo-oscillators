@@ -32,6 +32,7 @@ class TriOsc(PyoObject):
         PyoObject.__init__(self,mul,add)
         self._freq = freq
         self._phase = phase
+        self._freq,self._phase,mul,add,lmax=convertArgsToLists(freq,phase,mul,add)
         self._phasor = Phasor(freq=self._freq, phase=self._phase)
         self._inv_phasor = self._phasor * (-1) + 1
         self._min = Min(self._phasor, self._inv_phasor, mul=4, add=-1)
